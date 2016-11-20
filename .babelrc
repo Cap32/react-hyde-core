@@ -1,0 +1,64 @@
+{
+	"presets": [
+		"react",
+		"stage-0",
+	],
+	"env": {
+		"cjs": {
+			"presets": [
+				"es2015",
+				"stage-0",
+			],
+			"plugins": [
+				["minify-replace", {
+					"replacements": [
+						{
+							"identifierName": "__DEV__",
+							"replacement": {
+								"type": "booleanLiteral",
+								"value": false
+							}
+						}
+					]
+				}],
+				["minify-dead-code-elimination"],
+				["module-resolver", {
+					"root": ["./src/"]
+				}],
+				"transform-runtime",
+				"transform-decorators-legacy",
+				"transform-react-constant-elements",
+				"transform-react-inline-elements",
+				"lodash"
+			]
+		},
+		"es": {
+			"presets": [
+				["es2015", { "modules": false }],
+				"stage-0",
+			],
+			"plugins": [
+				["minify-replace", {
+					"replacements": [
+						{
+							"identifierName": "__DEV__",
+							"replacement": {
+								"type": "booleanLiteral",
+								"value": false
+							}
+						}
+					]
+				}],
+				["minify-dead-code-elimination"],
+				["module-resolver", {
+					"root": ["./src/"]
+				}],
+				"transform-runtime",
+				"transform-decorators-legacy",
+				"transform-react-constant-elements",
+				"transform-react-inline-elements",
+				"lodash"
+			]
+		}
+	}
+}

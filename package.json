@@ -1,0 +1,66 @@
+{
+  "name": "react-hyde-core",
+  "description": "react-hyde core module",
+  "version": "0.0.0-alpha.0",
+  "scripts": {
+    "start": "webpack-dev-server",
+    "prebuild": "rimraf dist lib es",
+    "build:cjs": "cross-env BABEL_ENV=cjs babel src -d lib",
+    "build:es": "cross-env BABEL_ENV=es babel src -d es",
+    "build": "npm run build:cjs && npm run build:es && webpack -p --env.prod --env.build",
+    "prepublish": "npm run build"
+  },
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "jsnext:main": "es/index.js",
+  "author": {
+    "name": "Cap32"
+  },
+  "licenses": "MIT",
+  "peerDependencies": {
+    "react": "^0.14.0 || ^15.0.0",
+    "react-dom": "^0.14.0 || ^15.0.0"
+  },
+  "dependencies": {
+    "http-ask": "^0.0.0-alpha.2",
+    "lodash": "^4.0.0",
+    "react-enroute": "^1.0.0",
+    "react-wormhole-hoc": "^0.0.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.11.4",
+    "babel-core": "^6.13.2",
+    "babel-eslint": "^6.1.2",
+    "babel-loader": "^6.2.7",
+    "babel-plugin-lodash": "^3.2.6",
+    "babel-plugin-minify-dead-code-elimination": "^0.1.0",
+    "babel-plugin-minify-replace": "^0.0.1",
+    "babel-plugin-module-resolver": "^2.3.0",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-plugin-transform-react-constant-elements": "^6.9.1",
+    "babel-plugin-transform-react-inline-elements": "^6.8.0",
+    "babel-plugin-transform-runtime": "^6.15.0",
+    "babel-polyfill": "^6.16.0",
+    "babel-preset-es2015": "^6.13.2",
+    "babel-preset-react": "^6.11.1",
+    "babel-preset-react-hmre": "^1.1.1",
+    "babel-preset-stage-0": "^6.5.0",
+    "babel-register": "^6.11.6",
+    "cross-env": "^3.1.3",
+    "eslint": "^2.4.0",
+    "eslint-import-resolver-webpack": "^0.7.0",
+    "eslint-loader": "^1.6.0",
+    "eslint-plugin-babel": "^3.2.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-react": "^5.0.1",
+    "get-my-ip": "^0.0.1",
+    "glob": "^5.0.14",
+    "mkdirp": "^0.5.1",
+    "react": "15.3.2",
+    "react-dom": "15.3.2",
+    "react-hot-loader": "^3.0.0-beta.6",
+    "rimraf": "^2.5.4",
+    "webpack": "v2.1.0-beta.25",
+    "webpack-dev-server": "2.1.0-beta.9"
+  }
+}
