@@ -1,10 +1,12 @@
 
 import AppView from 'hydeTheme/AppView';
+import PageView from 'hydeTheme/PageView';
 import PostsListView from 'hydeTheme/PostsListView';
 import PostView from 'hydeTheme/PostView';
 
 const components = {
 	AppView,
+	PageView,
 	PostsListView,
 	PostView,
 };

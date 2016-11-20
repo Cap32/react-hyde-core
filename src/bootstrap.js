@@ -1,2 +1,2 @@
 
-require('./src').bootstrap();
+require('./').bootstrap();

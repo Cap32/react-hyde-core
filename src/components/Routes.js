@@ -11,34 +11,38 @@ const ensurePath = (path) => {
 	return ('/' + (page ? page.link : path)).replace(/\/+/, '/');
 };
 
-const Routes = ({ routes, location }) => routes.length > 0 &&
-	<Router location={location}>
-		{routes.reduce((children, { baseName, type }) => {
-			const isDir = type === 'dir';
-			const path = ensurePath(baseName);
+const Routes = ({ routes, location, pageComponent: PageView }) =>
+	routes.length > 0 && (
+		<Router location={location}>
+			<Route path="*" component={PageView}>
+				{routes.reduce((children, { baseName, type }) => {
+					const isDir = type === 'dir';
+					const path = ensurePath(baseName);
 
-			children.push(
-				<Route
-					path={path}
-					key={path}
-					component={isDir ? PostsList : Post}
-				/>
-			);
+					children.push(
+						<Route
+							path={path}
+							key={path}
+							component={isDir ? PostsList : Post}
+						/>
+					);
 
-			if (isDir) {
-				const path = ensurePath(`${baseName}/:sha`);
-				children.push(
-					<Route
-						path={path}
-						key={path}
-						component={Post}
-					/>
-				);
-			}
+					if (isDir) {
+						const path = ensurePath(`${baseName}/:sha`);
+						children.push(
+							<Route
+								path={path}
+								key={path}
+								component={Post}
+							/>
+						);
+					}
 
-			return children;
-		}, [])}
-	</Router>
+					return children;
+				}, [])}
+			</Route>
+		</Router>
+	)
 ;
 
 Routes.propTypes = {

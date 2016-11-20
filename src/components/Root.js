@@ -19,6 +19,7 @@ history.pushState = (state, ...rest) => {
 @fetch({ shouldRefetch: false })
 export default class Root extends PureComponent {
 	View = componentsRegistry.get('AppView');
+	PageView = componentsRegistry.get('PageView');
 
 	state = {
 		children: null,
@@ -55,6 +56,7 @@ export default class Root extends PureComponent {
 				children: this._renderChildren({
 					routes,
 					location: location.get(),
+					pageComponent: this.PageView,
 				}),
 			});
 		});
@@ -70,6 +72,7 @@ export default class Root extends PureComponent {
 			children: this._renderChildren({
 				location: location.get(),
 				routes: this.state.routes,
+				pageComponent: this.PageView,
 			}),
 		});
 	}
