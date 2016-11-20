@@ -27,7 +27,10 @@ const pushFetching = () => fetchings.set(fetchings.get().concat(true));
 export const fetchPost = (location, sha) => {
 	const cacheKey = location;
 
-	if (cache.has(cacheKey)) { return noop; }
+	if (cache.has(cacheKey)) {
+		postStore.set(cache.get(cacheKey));
+		return noop;
+	}
 
 	postStore.set({
 		post: { content: '' },
@@ -47,11 +50,12 @@ export const fetchPost = (location, sha) => {
 		.exec()
 		.then((data) => {
 			const post = parsePost(data);
-			cache.set(cacheKey, post);
-			postStore.set({
+			const value = {
 				post,
 				isFetching: false,
-			});
+			};
+			cache.set(cacheKey, value);
+			postStore.set(value);
 			dropFetching();
 		})
 		.catch((err) => {
@@ -70,9 +74,12 @@ export const fetchPost = (location, sha) => {
 };
 
 export const fetchPostsList = () => {
-	const cacheKey = '/';
+	const cacheKey = '_list';
 
-	if (cache.has(cacheKey)) { return noop; }
+	if (cache.has(cacheKey)) {
+		postsListStore.set(cache.get(cacheKey));
+		return noop;
+	}
 
 	postsListStore.set({
 		posts: [],
@@ -92,11 +99,12 @@ export const fetchPostsList = () => {
 				.map(parsePost)
 				.sort((a, b) => a.sortingId - b.sortingId < 0 ? 1 : -1)
 			;
-			cache.set(cacheKey, posts);
-			postsListStore.set({
+			const value = {
 				posts,
 				isFetching: false,
-			});
+			};
+			cache.set(cacheKey, value);
+			postsListStore.set(value);
 			dropFetching();
 		})
 		.catch((err) => {
