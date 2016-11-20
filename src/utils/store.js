@@ -11,6 +11,6 @@ export const postStore = new Wormhole({
 	isFetching: false,
 });
 
-export const postsList = new Wormhole({ posts: [], isFetching: false });
+export const postsListStore = new Wormhole({ posts: [], isFetching: false });
 export const errorMessage = new Wormhole('');
 export const fetchings = new Wormhole([]);

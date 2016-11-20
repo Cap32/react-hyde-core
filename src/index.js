@@ -5,6 +5,8 @@ import Root from 'components/Root';
 import Wormhole from 'react-wormhole-hoc';
 
 export location from 'utils/location';
+export * as store from 'utils/store';
+export * as actions from 'utils/actions';
 export componentsRegistry from 'utils/componentsRegistry';
 
 export const compose = Wormhole.compose;

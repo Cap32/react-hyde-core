@@ -1,6 +1,6 @@
 
 import {
-	postStore, pagesStore, postsList, fetchings, errorMessage,
+	postStore, pagesStore, postsListStore, fetchings, errorMessage,
 } from './store';
 import { askArticles, askBlobs } from 'utils/askAPIs';
 import parsePost from 'utils/parsePost';
@@ -20,6 +20,10 @@ const catchError = (err, update) => {
 	}
 };
 
+const dropFetching = () => fetchings.set(fetchings.get().slice(1));
+
+const pushFetching = () => fetchings.set(fetchings.get().concat(true));
+
 export const fetchPost = (location, sha) => {
 	const cacheKey = location;
 
@@ -29,6 +33,7 @@ export const fetchPost = (location, sha) => {
 		post: { content: '' },
 		isFetching: true,
 	});
+	pushFetching();
 
 	const cancellation = new Cancellation();
 
@@ -47,6 +52,7 @@ export const fetchPost = (location, sha) => {
 				post,
 				isFetching: false,
 			});
+			dropFetching();
 		})
 		.catch((err) => {
 			catchError(err, (msg) => {
@@ -56,6 +62,7 @@ export const fetchPost = (location, sha) => {
 				});
 				errorMessage.set(msg);
 			});
+			dropFetching();
 		})
 	;
 
@@ -67,10 +74,11 @@ export const fetchPostsList = () => {
 
 	if (cache.has(cacheKey)) { return noop; }
 
-	postsList.set({
+	postsListStore.set({
 		posts: [],
 		isFetching: true,
 	});
+	pushFetching();
 
 	const cancellation = new Cancellation();
 	askArticles
@@ -85,19 +93,21 @@ export const fetchPostsList = () => {
 				.sort((a, b) => a.sortingId - b.sortingId < 0 ? 1 : -1)
 			;
 			cache.set(cacheKey, posts);
-			postsList.set({
+			postsListStore.set({
 				posts,
 				isFetching: false,
 			});
+			dropFetching();
 		})
 		.catch((err) => {
 			catchError(err, (msg) => {
-				postsList.set({
+				postsListStore.set({
 					posts: [],
 					isFetching: false,
 				});
 				errorMessage.set(msg);
 			});
+			dropFetching();
 		})
 	;
 
@@ -113,6 +123,7 @@ export const fetchPages = () => {
 		pages: [],
 		isFetching: true,
 	});
+	pushFetching();
 
 	const { pages } = getConfigs();
 	const cancellation = new Cancellation();
@@ -127,6 +138,7 @@ export const fetchPages = () => {
 				pages: list.map(parsePost),
 				isFetching: false,
 			});
+			dropFetching();
 		})
 		.catch((err) => {
 			catchError(err, (msg) => {
@@ -136,6 +148,7 @@ export const fetchPages = () => {
 				});
 				errorMessage.set(msg);
 			});
+			dropFetching();
 		})
 	;
 

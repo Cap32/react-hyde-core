@@ -2,10 +2,10 @@
 import React, { PureComponent } from 'react';
 import componentsRegistry from 'utils/componentsRegistry';
 import fetch from 'utils/fetch';
-import { postsList } from 'utils/store';
+import { postsListStore } from 'utils/store';
 import { fetchPostsList } from 'utils/actions';
 
-@postsList.hoc('posts')
+@postsListStore.hoc('posts')
 @fetch()
 export default class PostsList extends PureComponent {
 	View = componentsRegistry.get('PostsListView');
