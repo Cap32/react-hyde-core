@@ -10,7 +10,7 @@ import componentsRegistry from 'utils/componentsRegistry';
 export default class Post extends PureComponent {
 	static propTypes = {
 		params: PropTypes.shape({
-			sha: PropTypes.string,
+			name: PropTypes.string,
 		}),
 		location: PropTypes.string,
 	};
@@ -18,8 +18,8 @@ export default class Post extends PureComponent {
 	View = componentsRegistry.get('PostView');
 
 	fetch() {
-		const { params: { sha }, location } = this.props;
-		return fetchPost(location, sha);
+		const { params: { name }, location } = this.props;
+		return fetchPost(location, name);
 	}
 
 	render() {

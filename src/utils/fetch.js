@@ -1,13 +1,13 @@
 
 import mixin from 'utils/mixin';
+import { Cancellation } from 'http-ask';
 
 export default (options = {}) => mixin({
-	_cancelFetch() {
-		if (this._cancellation) { this._cancellation.cancel(); }
-	},
 	_handleFetch() {
 		if (typeof this.fetch === 'function') {
-			this._cancellation = this.fetch();
+			const getCancellation = () => this._cancelFetch = new Cancellation();
+			const execFetch = this.fetch();
+			execFetch({ getCancellation });
 		}
 	},
 	componentDidMount() {
@@ -20,6 +20,8 @@ export default (options = {}) => mixin({
 		}
 	},
 	componentWillUnmount() {
-		this._cancelFetch();
+		if (this._cancelFetch) {
+			this._cancelFetch.cancel();
+		}
 	},
 });

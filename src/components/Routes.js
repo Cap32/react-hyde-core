@@ -28,7 +28,7 @@ const Routes = ({ routes, location, pageComponent: PageView }) =>
 					);
 
 					if (isDir) {
-						const path = ensurePath(`${baseName}/:sha`);
+						const path = ensurePath(`${baseName}/:name`);
 						children.push(
 							<Route
 								path={path}

@@ -2188,11 +2188,12 @@ hpack.js@^2.1.6:
     readable-stream "^2.0.1"
     wbuf "^1.1.0"
 
-http-ask@^0.0.0-alpha.2:
-  version "0.0.0-alpha.2"
-  resolved "http://registry.npm.taobao.org/http-ask/download/http-ask-0.0.0-alpha.2.tgz#e427a87280cd0d6b82ff7ae00bda8b09382914b7"
+http-ask:
+  version "0.0.0-alpha.3"
+  resolved "http://registry.npm.taobao.org/http-ask/download/http-ask-0.0.0-alpha.3.tgz#6cf0a51f191f3134a6a94cb6eff93a2d8773d112"
   dependencies:
     isomorphic-fetch "^2.2.1"
+    object-assign "^4.1.0"
 
 http-browserify@^1.3.2:
   version "1.7.0"
@@ -3190,8 +3191,8 @@ rc@~1.1.6:
     strip-json-comments "~1.0.4"
 
 react-addons-shallow-compare@^15.0.0:
-  version "15.4.0"
-  resolved "http://registry.npm.taobao.org/react-addons-shallow-compare/download/react-addons-shallow-compare-15.4.0.tgz#17b2cced1928937bbcdb4832fb200bc34bd47871"
+  version "15.4.1"
+  resolved "http://registry.npm.taobao.org/react-addons-shallow-compare/download/react-addons-shallow-compare-15.4.1.tgz#b68103dd4d13144cb221065f6021de1822bd435a"
 
 react-deep-force-update@^1.0.0:
   version "1.0.1"
@@ -3246,13 +3247,13 @@ react-transform-hmr@^1.0.3:
     global "^4.3.0"
     react-proxy "^1.1.7"
 
-react-wormhole-hoc@^0.0.2:
-  version "0.0.2"
-  resolved "http://registry.npm.taobao.org/react-wormhole-hoc/download/react-wormhole-hoc-0.0.2.tgz#78ccc70c8a9c12daa8236c425dad57d1d0f0fb36"
+react-wormhole-hoc:
+  version "0.0.3"
+  resolved "http://registry.npm.taobao.org/react-wormhole-hoc/download/react-wormhole-hoc-0.0.3.tgz#36758e2979ca5204c7af40a68ff689a2891f4b69"
   dependencies:
     hoist-non-react-statics "^1.2.0"
     react-addons-shallow-compare "^15.0.0"
-    subscribable-value "^0.0.3"
+    subscribable-value "^0.1.0"
 
 react@15.3.2:
   version "15.3.2"
@@ -3700,15 +3701,18 @@ strip-json-comments@~1.0.1, strip-json-comments@~1.0.4:
   version "1.0.4"
   resolved "http://registry.npm.taobao.org/strip-json-comments/download/strip-json-comments-1.0.4.tgz#1e15fbcac97d3ee99bf2d73b4c656b082bbafb91"
 
-subscribable-lite@^0.0.4:
-  version "0.0.4"
-  resolved "http://registry.npm.taobao.org/subscribable-lite/download/subscribable-lite-0.0.4.tgz#92cb8399cd1ca61163e2bb503890125cb298c085"
-
-subscribable-value@^0.0.3:
-  version "0.0.3"
-  resolved "http://registry.npm.taobao.org/subscribable-value/download/subscribable-value-0.0.3.tgz#be16660ea22be23f6013a7673f6c12c8bad2797c"
+subscribable-lite@^0.0.5:
+  version "0.0.5"
+  resolved "http://registry.npm.taobao.org/subscribable-lite/download/subscribable-lite-0.0.5.tgz#0b655c01258ef318ffcdb6cc34fea0626403f87f"
   dependencies:
-    subscribable-lite "^0.0.4"
+    object-assign "^4.1.0"
+
+subscribable-value@^0.1.0:
+  version "0.1.0"
+  resolved "http://registry.npm.taobao.org/subscribable-value/download/subscribable-value-0.1.0.tgz#2862397c19d53ff7c98c5e5d38950ca61585189f"
+  dependencies:
+    object-assign "^4.1.0"
+    subscribable-lite "^0.0.5"
 
 supports-color@^2.0.0:
   version "2.0.0"

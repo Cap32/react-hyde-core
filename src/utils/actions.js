@@ -1,12 +1,12 @@
 
 import {
-	postStore, pagesStore, postsListStore, fetchings, errorMessage,
+	postStore, pagesStore, postsListStore, errorMessage,
 } from './store';
-import { askArticles, askBlobs } from 'utils/askAPIs';
+import { askArticles } from 'utils/askAPIs';
 import parsePost from 'utils/parsePost';
-import { Cancellation } from 'http-ask';
 import MemoryCache from 'utils/MemoryCache';
 import noop from 'lodash';
+import { Cancellation } from 'http-ask';
 import getConfigs, { resolveLocation } from 'utils/getConfigs';
 
 const cache = new MemoryCache({ max: 20 });
@@ -20,78 +20,24 @@ const catchError = (err, update) => {
 	}
 };
 
-const dropFetching = () => fetchings.set(fetchings.get().slice(1));
-
-const pushFetching = () => fetchings.set(fetchings.get().concat(true));
-
-export const fetchPost = (location, sha) => {
-	const cacheKey = location;
-
-	if (cache.has(cacheKey)) {
-		postStore.set(cache.get(cacheKey));
-		return noop;
-	}
-
-	postStore.set({
-		post: { content: '' },
-		isFetching: true,
-	});
-	pushFetching();
-
-	const cancellation = new Cancellation();
-
-	const ask = sha ?
-		askBlobs.clone().url(sha) :
-		askArticles.clone().url(resolveLocation(location))
-	;
-
-	ask
-		.cancellation(cancellation)
-		.exec()
-		.then((data) => {
-			const post = parsePost(data);
-			const value = {
-				post,
-				isFetching: false,
-			};
-			cache.set(cacheKey, value);
-			postStore.set(value);
-			dropFetching();
-		})
-		.catch((err) => {
-			catchError(err, (msg) => {
-				postStore.set({
-					post: { content: '' },
-					isFetching: false,
-				});
-				errorMessage.set(msg);
-			});
-			dropFetching();
-		})
-	;
-
-	return cancellation;
-};
-
-export const fetchPostsList = () => {
+export const fetchPostsList = () => ({ getCancellation }) => {
 	const cacheKey = '_list';
 
 	if (cache.has(cacheKey)) {
-		postsListStore.set(cache.get(cacheKey));
-		return noop;
+		const value = cache.get(cacheKey);
+		postsListStore.set(value);
+		return value;
 	}
 
 	postsListStore.set({
 		posts: [],
 		isFetching: true,
 	});
-	pushFetching();
 
-	const cancellation = new Cancellation();
-	askArticles
+	return askArticles
 		.clone()
 		.url('posts')
-		.cancellation(cancellation)
+		.cancellation(getCancellation())
 		.exec()
 		.then((dataList) => {
 			const posts = dataList
@@ -105,7 +51,7 @@ export const fetchPostsList = () => {
 			};
 			cache.set(cacheKey, value);
 			postsListStore.set(value);
-			dropFetching();
+			return value;
 		})
 		.catch((err) => {
 			catchError(err, (msg) => {
@@ -115,14 +61,46 @@ export const fetchPostsList = () => {
 				});
 				errorMessage.set(msg);
 			});
-			dropFetching();
 		})
 	;
-
-	return cancellation;
 };
 
-export const fetchPages = () => {
+export const fetchPost = (location) => async ({ getCancellation }) => {
+	const cacheKey = location;
+
+	if (cache.has(cacheKey)) {
+		postStore.set(cache.get(cacheKey));
+		return noop;
+	}
+
+	postStore.set({
+		post: { content: '' },
+		isFetching: true,
+	});
+
+	try {
+		const ask = askArticles.clone().url(resolveLocation(location));
+		const data = await ask.cancellation(getCancellation()).exec();
+		const post = parsePost(data);
+		const value = {
+			post,
+			isFetching: false,
+		};
+		cache.set(cacheKey, value);
+		postStore.set(value);
+	}
+	catch (err) {
+		catchError(err, (msg) => {
+			postStore.set({
+				post: { content: '' },
+				isFetching: false,
+			});
+			errorMessage.set(msg);
+		});
+	}
+};
+
+export const fetchPages = () => ({ getCancellation }) => {
 	const cacheKey = '_pages';
 
 	if (cache.has(cacheKey)) { return noop; }
@@ -131,22 +109,19 @@ export const fetchPages = () => {
 		pages: [],
 		isFetching: true,
 	});
-	pushFetching();
 
 	const { pages } = getConfigs();
-	const cancellation = new Cancellation();
 
 	const getPages = pages.length ? Promise.resolve(pages) :
-		askArticles.clone().exec().cancellation(cancellation)
+		askArticles.clone().cancellation(getCancellation()).exec()
 	;
 
-	getPages
+	return getPages
 		.then((list) => {
 			pagesStore.set({
 				pages: list.map(parsePost),
 				isFetching: false,
 			});
-			dropFetching();
 		})
 		.catch((err) => {
 			catchError(err, (msg) => {
@@ -156,9 +131,6 @@ export const fetchPages = () => {
 				});
 				errorMessage.set(msg);
 			});
-			dropFetching();
 		})
 	;
-
-	return cancellation;
 };
