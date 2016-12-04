@@ -98,6 +98,8 @@ module.exports = (webpackEnv = {}) => {
 		devServer: {
 			host,
 			port,
+			hot: true,
+			inline: false,
 			contentBase: './site',
 			historyApiFallback: {
 				disableDotRule: true
