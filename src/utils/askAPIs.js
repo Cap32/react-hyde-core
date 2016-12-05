@@ -3,7 +3,7 @@ import Ask from 'http-ask';
 import getConfigs from 'utils/getConfigs';
 
 const {
-	username, repo, articlesPath, client_id, client_secret,
+	username, repo, client_id, client_secret,
 } = getConfigs().github;
 
 const GITHUB_API = 'https://api.github.com';
@@ -19,14 +19,8 @@ export const askRepo = askGithub
 	.url(repo)
 ;
 
-export const askContent = askRepo.clone().url('contents');
-
-export const askArticles = askContent
+export const askIssues = askRepo
+	.query({ creator: username, state: 'open' })
 	.clone()
-	.url(articlesPath.replace(/^\//, ''))
-;
-
-export const askBlobs = askRepo
-	.clone()
-	.url('git/blobs')
+	.url('issues')
 ;

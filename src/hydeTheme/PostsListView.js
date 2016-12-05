@@ -10,9 +10,9 @@ const PostView = ({ posts, isFetching, errorMessage }) =>
 		<ErrorMessage errorMessage={errorMessage} />
 		{!isFetching && !errorMessage &&
 			<ul>
-				{posts.map(({ displayName, link }) =>
-					<li key={link}>
-						<Link href={`/posts${link}`}>{displayName}</Link>
+				{posts.map(({ body, title, number }) =>
+					<li key={number}>
+						<Link href={`/posts/${number}`}>{title}</Link>
 					</li>
 				)}
 			</ul>

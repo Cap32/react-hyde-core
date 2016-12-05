@@ -4,9 +4,9 @@ import Link from './Link';
 
 const Menu = ({ menu }) =>
 	<ul>
-		{menu.map(({ link, displayName }, index) =>
+		{menu.map(({ path, label }, index) =>
 			<li key={index}>
-				<Link href={link}>{displayName}</Link>
+				<Link href={path}>{label}</Link>
 			</li>
 		)}
 	</ul>

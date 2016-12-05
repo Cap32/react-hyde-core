@@ -1,13 +1,13 @@
 
 import Wormhole from 'react-wormhole-hoc';
+import getConfigs from 'utils/getConfigs';
 
-export const pagesStore = new Wormhole({
-	pages: [],
-	isFetching: false,
-});
+const { pages } = getConfigs();
+
+export const pagesStore = new Wormhole({ pages });
 
 export const postStore = new Wormhole({
-	post: { content: '' },
+	post: { title: '', body: '' },
 	isFetching: false,
 });
 
@@ -25,6 +25,5 @@ const maybeFetching = (nextValue, prevValue) => {
 	}
 };
 
-pagesStore.subscribe(maybeFetching);
 postStore.subscribe(maybeFetching);
 postsListStore.subscribe(maybeFetching);

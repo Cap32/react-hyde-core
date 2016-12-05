@@ -5,34 +5,31 @@ import PostsList from 'components/PostsList';
 import Post from 'components/Post';
 import getConfigs from 'utils/getConfigs';
 
-const ensurePath = (path) => {
-	const { pages } = getConfigs();
-	const page = pages.find(({ baseName, link }) => path === baseName && link);
-	return ('/' + (page ? page.link : path)).replace(/\/+/, '/');
-};
+const { pages } = getConfigs();
+const ensurePath = (path) => `/${path}`.replace(/\/+/, '/');
 
-const Routes = ({ routes, location, pageComponent: PageView }) =>
-	routes.length > 0 && (
+const Routes = ({ location, pageComponent: PageView }) =>
+	pages.length > 0 && (
 		<Router location={location}>
 			<Route path="*" component={PageView}>
-				{routes.reduce((children, { baseName, type }) => {
-					const isDir = type === 'dir';
-					const path = ensurePath(baseName);
+				{pages.reduce((children, { path, type }) => {
+					const isDir = type !== 'issue';
+					const finalPath = ensurePath(path);
 
 					children.push(
 						<Route
-							path={path}
-							key={path}
+							path={finalPath}
+							key={finalPath}
 							component={isDir ? PostsList : Post}
 						/>
 					);
 
 					if (isDir) {
-						const path = ensurePath(`${baseName}/:name`);
+						const finalPath = ensurePath(`${path}/posts/:number`);
 						children.push(
 							<Route
-								path={path}
-								key={path}
+								path={finalPath}
+								key={finalPath}
 								component={Post}
 							/>
 						);
@@ -46,7 +43,8 @@ const Routes = ({ routes, location, pageComponent: PageView }) =>
 ;
 
 Routes.propTypes = {
-	routes: PropTypes.array,
+	location: PropTypes.string,
+	pageComponent: PropTypes.func,
 };
 
 export default Routes;

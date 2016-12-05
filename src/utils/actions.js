@@ -1,15 +1,15 @@
 
 import {
-	postStore, pagesStore, postsListStore, errorMessage,
+	postStore, postsListStore, errorMessage,
 } from './store';
-import { askArticles } from 'utils/askAPIs';
-import parsePost from 'utils/parsePost';
+import location from 'utils/location';
+import { askIssues } from 'utils/askAPIs';
 import MemoryCache from 'utils/MemoryCache';
-import noop from 'lodash';
 import { Cancellation } from 'http-ask';
-import getConfigs, { resolveLocation } from 'utils/getConfigs';
+import getConfigs from 'utils/getConfigs';
 
 const cache = new MemoryCache({ max: 20 });
+const { pages } = getConfigs();
 
 const catchError = (err, update) => {
 	if (err instanceof Cancellation) {
@@ -20,8 +20,19 @@ const catchError = (err, update) => {
 	}
 };
 
+const match = () => {
+	const pathname = location.get();
+	const page = pages.find(({ path }) => path === pathname);
+
+	if (!page) { throw new Error('Not found'); }
+
+	return page;
+};
+
 export const fetchPostsList = () => ({ getCancellation }) => {
-	const cacheKey = '_list';
+	const { type, number } = match();
+
+	const cacheKey = `${type}::${number}`;
 
 	if (cache.has(cacheKey)) {
 		const value = cache.get(cacheKey);
@@ -34,17 +45,12 @@ export const fetchPostsList = () => ({ getCancellation }) => {
 		isFetching: true,
 	});
 
-	return askArticles
+	return askIssues
 		.clone()
-		.url('posts')
+		.query({ [type]: number })
 		.cancellation(getCancellation())
 		.exec()
-		.then((dataList) => {
-			const posts = dataList
-				.filter(({ type }) => type === 'file')
-				.map(parsePost)
-				.sort((a, b) => a.sortingId - b.sortingId < 0 ? 1 : -1)
-			;
+		.then((posts) => {
 			const value = {
 				posts,
 				isFetching: false,
@@ -65,23 +71,25 @@ export const fetchPostsList = () => ({ getCancellation }) => {
 	;
 };
 
-export const fetchPost = (location) => async ({ getCancellation }) => {
-	const cacheKey = location;
+export const fetchPost = (number) => async ({ getCancellation }) => {
+	if (!number) { number = match().number; }
+
+	const cacheKey = number;
 
 	if (cache.has(cacheKey)) {
-		postStore.set(cache.get(cacheKey));
-		return noop;
+		const value = cache.get(cacheKey);
+		postStore.set(value);
+		return value;
 	}
 
 	postStore.set({
-		post: { content: '' },
+		post: { body: '', title: '' },
 		isFetching: true,
 	});
 
 	try {
-		const ask = askArticles.clone().url(resolveLocation(location));
-		const data = await ask.cancellation(getCancellation()).exec();
-		const post = parsePost(data);
+		const ask = askIssues.clone().url(number);
+		const post = await ask.cancellation(getCancellation()).exec();
 		const value = {
 			post,
 			isFetching: false,
@@ -92,45 +100,10 @@ export const fetchPost = (location) => async ({ getCancellation }) => {
 	catch (err) {
 		catchError(err, (msg) => {
 			postStore.set({
-				post: { content: '' },
+				post: { body: '', title: '' },
 				isFetching: false,
 			});
 			errorMessage.set(msg);
 		});
 	}
-};
-
-export const fetchPages = () => ({ getCancellation }) => {
-	const cacheKey = '_pages';
-
-	if (cache.has(cacheKey)) { return noop; }
-
-	pagesStore.set({
-		pages: [],
-		isFetching: true,
-	});
-
-	const { pages } = getConfigs();
-
-	const getPages = pages.length ? Promise.resolve(pages) :
-		askArticles.clone().cancellation(getCancellation()).exec()
-	;
-
-	return getPages
-		.then((list) => {
-			pagesStore.set({
-				pages: list.map(parsePost),
-				isFetching: false,
-			});
-		})
-		.catch((err) => {
-			catchError(err, (msg) => {
-				pagesStore.set({
-					pages: [],
-					isFetching: false,
-				});
-				errorMessage.set(msg);
-			});
-		})
-	;
 };

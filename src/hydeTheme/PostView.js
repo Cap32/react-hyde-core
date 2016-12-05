@@ -8,14 +8,14 @@ const PostView = ({ post, isFetching, errorMessage }) =>
 		<Fetching isFetching={isFetching} />
 		<ErrorMessage errorMessage={errorMessage} />
 		{!isFetching && !errorMessage &&
-			<div>{post.content}</div>
+			<div>{post.body}</div>
 		}
 	</div>
 ;
 
 PostView.propTypes = {
 	post: PropTypes.shape({
-		content: PropTypes.string.isRequired,
+		body: PropTypes.string.isRequired,
 	}).isRequired,
 	isFetching: PropTypes.bool,
 	errorMessage: PropTypes.string,
